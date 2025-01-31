@@ -1,0 +1,122 @@
+{% extends 'evangelism/base.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <section class="row align-items-center my-5">
+        <div class="col-md-6">
+            <h1 class="display-4 mb-4">SoulSync: Empowering Evangelism</h1>
+            <p class="lead text-muted mb-4">
+                A comprehensive platform designed to streamline evangelism efforts, 
+                track new converts, and manage team tasks with precision and care.
+            </p>
+            <div class="d-flex gap-3">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">Register</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img src="/static/images/evangelism-illustration.svg" alt="Evangelism Illustration" class="img-fluid">
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="row my-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-6">Key Features</h2>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill text-primary mb-3" style="font-size: 3rem;"></i>
+                    <h3 class="card-title">Team Management</h3>
+                    <p class="card-text text-muted">
+                        Effortlessly manage and track your evangelism team members, 
+                        their contact information, and participation.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-plus-fill text-success mb-3" style="font-size: 3rem;"></i>
+                    <h3 class="card-title">Convert Tracking</h3>
+                    <p class="card-text text-muted">
+                        Maintain detailed records of new converts, 
+                        track their spiritual journey, and provide personalized support.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-list-task text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h3 class="card-title">Task Management</h3>
+                    <p class="card-text text-muted">
+                        Create, assign, and track tasks for team members, 
+                        ensuring efficient follow-up and accountability.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="row my-5 bg-light p-4 rounded">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-6">What Our Users Say</h2>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <p>"SoulSync has revolutionized how we track and support new converts."</p>
+                        <footer class="blockquote-footer">Pastor John Smith</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <p>"The task management feature keeps our evangelism team aligned and motivated."</p>
+                        <footer class="blockquote-footer">Ministry Leader Sarah Johnson</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <p>"Easy to use, powerful in impact. SoulSync is a game-changer."</p>
+                        <footer class="blockquote-footer">Evangelism Coordinator Mike Lee</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="row my-5 text-center">
+        <div class="col-12">
+            <div class="bg-primary text-white p-5 rounded">
+                <h2 class="display-5 mb-4">Ready to Transform Your Evangelism Efforts?</h2>
+                <p class="lead mb-4">
+                    Join hundreds of ministries leveraging technology to spread the message of hope.
+                </p>
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg">Get Started for Free</a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

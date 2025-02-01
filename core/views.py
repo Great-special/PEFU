@@ -1,8 +1,29 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.contrib.auth import (
+    login, 
+    authenticate, 
+    logout, 
+    update_session_auth_hash
+)
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import (
+    PasswordResetView, 
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView
+)
 from .models import EvangelismTeamMember, NewConvert, Task, TaskMembers
-from .forms import EvangelismTeamMemberForm, NewConvertForm, TaskForm, TaskMembersForm
+from .forms import (
+    EvangelismTeamMemberForm, 
+    NewConvertForm, TaskForm, 
+    TaskMembersForm,
+    UserRegistrationForm, 
+    UserProfileUpdateForm, 
+    CustomPasswordChangeForm
+)
 
 # EvangelismTeamMember Views
 
@@ -169,3 +190,112 @@ def task_members_delete(request, pk):
         messages.success(request, 'Task members removed successfully.')
         return redirect('task_list')
     return render(request, 'evangelism/task_members_confirm_delete.html', {'task_members': task_members})
+
+@login_required
+def dashboard(request):
+    user = request.user
+    if user.user_type == 'admin':
+        context = {
+            'team_member_count': EvangelismTeamMember.objects.count(),
+            'new_convert_count': NewConvert.objects.count(),
+            'completed_tasks': Task.objects.filter(completed=True).count(),
+            'pending_tasks': Task.objects.filter(completed=False).count(),
+            'recent_tasks': Task.objects.order_by('-date_created')[:5]
+        }
+    else:
+        context = {
+            'new_convert_count': NewConvert.objects.filter(user=user).count(),
+            'completed_tasks': Task.objects.filter(completed=True, task_executor=user).count(),
+            'pending_tasks': Task.objects.filter(completed=False, task_executor=user).count(),
+            'recent_tasks': Task.objects.order_by('-date_created')[:5]
+        }
+    return render(request, 'evangelism/dashboard.html', context)
+
+
+def register_user(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            # Save the user
+            user = form.save()
+            
+            # Log the user in immediately after registration
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome, {username}! Your account has been created.')
+                return redirect('dashboard')
+    else:
+        form = UserRegistrationForm()
+    
+    return render(request, 'auth/register.html', {'form': form})
+
+def login_user(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Welcome back, {username}!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    
+    return render(request, 'auth/login.html')
+
+@login_required
+def logout_user(request):
+    logout(request)
+    messages.info(request, 'You have been logged out.')
+    return redirect('landing_page')
+
+@login_required
+def profile_update(request):
+    if request.method == 'POST':
+        form = UserProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('dashboard')
+    else:
+        form = UserProfileUpdateForm(instance=request.user)
+    
+    return render(request, 'auth/profile_update.html', {'form': form})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    return render(request, 'auth/change_password.html', {'form': form})
+
+# Custom Password Reset Views
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'auth/password_reset.html'
+    email_template_name = 'auth/password_reset_email.html'
+    success_url = '/password_reset/done/'
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'auth/password_reset_done.html'
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'auth/password_reset_confirm.html'
+    success_url = '/password_reset/complete/'
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'auth/password_reset_complete.html'

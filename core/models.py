@@ -1,7 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
+
+class CustomUser(AbstractUser):
+    USER_TYPES = (
+        ('admin', 'Admin'),
+        ('user', 'User'),
+    )
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, default='user')
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.username} - {self.user_type}"
 
 class EvangelismTeamMember(models.Model):
     full_name = models.CharField(max_length=100)
@@ -19,7 +30,7 @@ class EvangelismTeamMember(models.Model):
 
 
 class NewConvert(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="new_convert")
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="new_convert")
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=100)
@@ -36,9 +47,9 @@ class NewConvert(models.Model):
         verbose_name_plural = "New Converts"
 
 
-class Task (models.Models):
-    task_owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="task_owner")
-    task_executor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="task_executor")
+class Task (models.Model):
+    task_owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="task_owner")
+    task_executor = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="task_executor")
     title = models.CharField(max_length=100)
     description = models.TextField()
     completed = models.BooleanField(default=False)

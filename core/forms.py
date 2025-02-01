@@ -1,6 +1,8 @@
 from django import forms
-from .models import EvangelismTeamMember, NewConvert, Task, TaskMembers
 from django.core.validators import RegexValidator
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
+from .models import CustomUser, EvangelismTeamMember, NewConvert, Task, TaskMembers
+
 
 class PhoneNumberValidator(RegexValidator):
     regex = r'^\+?1?\d{9,15}$'
@@ -69,3 +71,58 @@ class TaskMembersForm(forms.ModelForm):
                 raise forms.ValidationError("Maximum 10 members allowed per task.")
         
         return cleaned_data
+    
+    
+    
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=100, required=True)
+    
+    phone_number = forms.CharField(
+        validators=[
+            RegexValidator(
+                regex=r'^\+?1?\d{9,15}$', 
+                message="Enter a valid phone number."
+            )
+        ],
+        required=True,
+        help_text="International format preferred."
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username', 
+            'first_name', 
+            'last_name', 
+            'email', 
+            'password1', 
+            'password2',
+            'phone_number'
+        ]
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        # Check if email already exists
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("A user with this email already exists.")
+        return email
+
+class UserProfileUpdateForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email']
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def clean_new_password1(self):
+        password = self.cleaned_data['new_password1']
+        # Add custom password strength validation
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+        
+        # Optional: Add more complex password validation
+        if password.lower() == password or password.upper() == password:
+            raise forms.ValidationError("Password must contain both uppercase and lowercase letters.")
+        
+        return password

@@ -1,0 +1,27 @@
+
+{# task_members_confirm_delete.html #}
+{% extends 'evangelism/base.html' %}
+
+{% block title %}Confirm Remove Task Members{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h3>Confirm Remove Task Members</h3>
+            </div>
+            <div class="card-body">
+                <p>Are you sure you want to remove these members from the task?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'task_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger">Confirm Remove</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

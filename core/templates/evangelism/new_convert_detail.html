@@ -4,21 +4,21 @@
 {% block title %}New Convert Details{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-5">
     <div class="col-md-8 col-lg-6">
         <div class="card">
             <div class="card-header">
                 <h3>New Convert Details</h3>
             </div>
             <div class="card-body">
-                <p><strong>Name:</strong> {{ object.first_name }} {{ object.last_name }}</p>
-                <p><strong>Phone:</strong> {{ object.phone_number }}</p>
-                <p><strong>Address:</strong> {{ object.address }}</p>
-                <p><strong>Prayer Request:</strong> {{ object.prayer_request }}</p>
-                <p><strong>Date Joined:</strong> {{ object.date_joined|date:"D, d M Y" }}</p>
+                <p><strong>Name:</strong> {{ new_convert.first_name }} {{ new_convert.last_name }}</p>
+                <p><strong>Phone:</strong> {{ new_convert.phone_number }}</p>
+                <p><strong>Address:</strong> {{ new_convert.address }}</p>
+                <p><strong>Prayer Request:</strong> {{ new_convert.prayer_request }}</p>
+                <p><strong>Date Joined:</strong> {{ new_convert.date_joined|date:"D, d M Y" }}</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="{% url 'new_convert_update' object.pk %}" class="btn btn-warning">Edit</a>
-                    <a href="{% url 'new_convert_delete' object.pk %}" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'new_convert_update' new_convert.pk %}" class="btn btn-warning">Edit</a>
+                    <a href="{% url 'new_convert_delete' new_convert.pk %}" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         </div>

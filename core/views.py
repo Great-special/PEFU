@@ -204,6 +204,7 @@ def dashboard(request):
         }
     else:
         context = {
+            'team_member_count': EvangelismTeamMember.objects.count(), # remove this line
             'new_convert_count': NewConvert.objects.filter(user=user).count(),
             'completed_tasks': Task.objects.filter(completed=True, task_executor=user).count(),
             'pending_tasks': Task.objects.filter(completed=False, task_executor=user).count(),

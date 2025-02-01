@@ -4,8 +4,8 @@
 {% block title %}Evangelism Team Members{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
+<div class="row mt-5">
+    <div class="col-12 mt-1">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Evangelism Team Members</h3>
@@ -13,7 +13,7 @@
                     <i class="bi bi-plus-circle"></i> Add Member
                 </a>
             </div>
-            <div class="table-responsive">
+            <div class="d-none d-md-block table-responsive">
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
@@ -50,6 +50,44 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="d-block d-md-none space-y-4">
+                {% for member in team_members %}
+                <div class="border rounded-lg p-4">
+                    <div class="mb-2">
+                        <h3 class="font-semibold">{{ member.full_name }}</h3>
+                    </div>
+                    <div class="text-sm space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Phone:</span>
+                            <span>{{ member.phone_number }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Created:</span>
+                            <span>{{ member.date_joined|date:"D, d M Y" }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Actions:</span>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{% url 'team_member_detail' member.pk %}" class="btn btn-info">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'team_member_update' member.pk %}" class="btn btn-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'team_member_delete' member.pk %}" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-gray-500 py-4">No recent tasks</div>
+                {% endfor %}
+
             </div>
         </div>
     </div>
